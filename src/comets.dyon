@@ -1,0 +1,178 @@
+comet_pos() = 0
+comet_angle() = 1
+comet_vel() = 2
+comet_angle_vel() = 3
+comet_radius() = 4
+
+// Reserve space for 100 comets
+// Stores [position, angle, velocity, angle_velocity, radius]
+fn init_comets() -> [Comet []] {
+    return [[(0, 0), 0, (0, 0), 0, 0]; 20]
+}
+
+fn init_collision_grid_settings(settings) -> CollisionGrid [[f64]] {
+    return [[0; settings.h]; settings.w]
+}
+
+fn spawn_comets()
+~ dt: f64,
+  mut world: World,
+  mut comets: [Comet []]
+{
+    if (random() * dt) >= world.comet_settings.spawn_probability { return }
+    n := world.free_comet_slot
+    if (n + 1) >= len(comets) { return }
+
+    world.free_comet_slot += create_comet(
+        slot: n,
+        pos: window_size() / 2 + dir(angle: random() * tau()) * x(window_size()),
+        radius: none(),
+        angle: none()
+    )
+}
+
+fn create_comet_slot_pos_radius_angle(slot: f64, pos: vec4, radius: opt[f64], angle: opt[f64])
+~ world: World,
+  mut comets: [Comet []]
+-> f64
+{
+    if slot >= len(comets) { return 0 }
+    new_radius := if radius == none() {
+            (random() + 0.1) * world.comet_settings.radius
+        } else {
+            unwrap(radius) / 2
+        }
+    if new_radius < world.comet_settings.min_radius { return 0 }
+
+    POS := comet_pos()
+    VEL := comet_vel()
+    ANGLE_VEL := comet_angle_vel()
+    RADIUS := comet_radius()
+
+    offset := world.space_settings.offset
+    // Position.
+    comets[slot][POS] = clamp(
+        pos: pos,
+        aa: (0, 0) - offset,
+        bb: window_size() + offset
+    )
+    // Velocity.
+    comets[slot][VEL] = if angle == none() {
+            world.comet_settings.speed * dir(angle: random() * tau())
+        } else {
+            dir(angle: unwrap(angle)) * world.comet_settings.speed
+        }
+    // Angle velocity.
+    comets[slot][ANGLE_VEL] = (random() - 0.5) * tau()
+    // Radius.
+    comets[slot][RADIUS] = clone(new_radius)
+    return 1
+}
+
+fn move_comets()
+~ world: World,
+  mut comets: [Comet []],
+  dt: f64
+{
+    POS := comet_pos()
+    VEL := comet_vel()
+    ANGLE := comet_angle()
+    ANGLE_VEL := comet_angle_vel()
+    RADIUS := comet_radius()
+
+    for i world.free_comet_slot {
+        comets[i][POS] += dt * comets[i][VEL]
+        comets[i][POS] = warp(pos: comets[i][POS],
+                            offset: world.space_settings.offset)
+        comets[i][ANGLE] += dt * comets[i][ANGLE_VEL]
+    }
+}
+
+fn shoot_comets()
+~ mut world: World,
+  mut comets: [Comet []],
+  dt: f64,
+  mut collision_grid: CollisionGrid [[f64]],
+  mut bullets: [Bullet []]
+{
+    POS := comet_pos()
+    VEL := comet_vel()
+    ANGLE := comet_angle()
+    ANGLE_VEL := comet_angle_vel()
+    RADIUS := comet_radius()
+    BULLET_ANGLE := bullet_angle()
+
+    units := world.collision_settings.units
+    w := world.collision_settings.w
+    h := world.collision_settings.h
+
+    loop {
+        changed := false
+
+        for i, j {
+            collision_grid[i][j] = 0
+        }
+
+        for i world.free_bullet_slot {
+            pos := bullets[i][0]
+            x := x(pos) / units
+            y := y(pos) / units
+            if (x < 0) || (x >= w) { continue }
+            if (y < 0) || (y >= h) { continue }
+            collision_grid[x][y] = i + 1
+        }
+
+        'comet: for i world.free_comet_slot {
+            pos := comets[i][POS]
+            vel := comets[i][VEL]
+            radius := comets[i][RADIUS]
+            for rx := -radius; rx < radius; rx += units {
+                for ry := -radius; ry < radius; ry += units {
+                    x := (x(pos) + rx) / units
+                    y := (y(pos) + ry) / units
+                    if (x < 0) || (x >= w) { continue }
+                    if (y < 0) || (y >= h) { continue }
+                    bullet := collision_grid[x][y]
+                    if bullet > 0 {
+                        bullet -= 1
+                        bullet_angle := bullets[bullet][BULLET_ANGLE]
+                        bend := tau() / 4
+                        create_explosion(pos: pos, vel: vel, radius: radius)
+                        world.free_comet_slot = swap_remove(mut comets, i, world.free_comet_slot)
+                        world.free_bullet_slot = swap_remove(mut bullets, bullet, world.free_bullet_slot)
+                        world.free_comet_slot += create_comet(
+                            slot: world.free_comet_slot,
+                            pos: pos,
+                            radius: some(radius),
+                            angle: some(bullet_angle + bend)
+                        )
+                        world.free_comet_slot += create_comet(
+                            slot: world.free_comet_slot,
+                            pos: pos,
+                            radius: some(radius),
+                            angle: some(bullet_angle - bend)
+                        )
+                        // Exit loop because list is changed.
+                        changed := true
+                        break 'comet
+                    }
+                }
+            }
+        }
+        if !changed { break }
+    }
+}
+
+fn draw_comets_active
+(comets: [Comet []], active: f64)
+~ mut draw_list
+{
+    color := #ff0000
+    reset_transform()
+    for i active {
+        center := comets[i][comet_pos()]
+        radius := comets[i][comet_radius()]
+        transform(center: center, angle: comets[i][comet_angle()])
+        circle(color: color, center: center, radius: radius, resolution: 5)
+    }
+}

@@ -1,0 +1,38 @@
+key_a() = 97
+key_d() = 100
+key_w() = 119
+key_s() = 115
+key_space() = 32
+key_up() = 1073741906
+key_left() = 1073741904
+key_right() = 1073741903
+key_down() = 1073741905
+
+forward(key: f64) = (key == key_w()) || (key == key_up())
+turn_left(key: f64) = (key == key_a()) || (key == key_left())
+turn_right(key: f64) = (key == key_d()) || (key == key_right())
+backward(key: f64) = (key == key_s()) || (key == key_down())
+
+fn event() {
+    handle(key: press_keyboard_key(), value: 1)
+    handle(key: release_keyboard_key(), value: 0)
+}
+
+fn handle_key_value(key: opt[f64], val: f64) ~ mut world: World {
+    if key == none() { return }
+    key := unwrap(key)
+    if turn_left(key) {
+        world.input_state.left = clone(val)
+    } else if turn_right(key) {
+        world.input_state.right = clone(val)
+    } else if forward(key) {
+        world.input_state.forward = clone(val)
+    } else if backward(key) {
+        world.input_state.backward = clone(val)
+    } else if key == key_space() {
+        world.input_state.fire = clone(val)
+    } else {
+        // print("Key: ")
+        // println(key)
+    }
+}

@@ -1,0 +1,20 @@
+fn swap_remove(mut list: [], ind: f64, n: f64) -> f64 {
+    if n == 0 { return clone(n) }
+    if (ind + 1) < n {
+        swap(mut list, ind, n - 1)
+    }
+    return n - 1
+}
+
+fn test() {
+    list := [1, 2, 3, 4, 0]
+    n := 4
+
+    for i 3 {
+        n = swap_remove(mut list, 0, n)
+        print("list: ")
+        println(list)
+        print("n: ")
+        println(n)
+    }
+}

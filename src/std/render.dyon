@@ -1,0 +1,86 @@
+/*
+Wraps a nice interface around draw list commands.
+*/
+
+fn clear_color(color: vec4)
+~ mut draw_list: [[]] {
+    push(mut draw_list, ["clear", color])
+}
+
+fn line_color_radius_from_to(color: vec4, radius: f64, from: vec4, to: vec4)
+~ mut draw_list: [[]] {
+    push(mut draw_list, ["line_color_radius_from_to", color, radius, from, to])
+}
+
+fn rectangle_color_corner_size(color: vec4, corner: vec4, size: vec4)
+~ mut draw_list: [[]] {
+    push(mut draw_list, ["rectangle_color_corner_size", color, corner, size])
+}
+
+fn ellipse_color_corner_size(color: vec4, corner: vec4, size: vec4)
+~ mut draw_list: [[]] {
+    ellipse(color: color, corner: corner, size: size, resolution: 16)
+}
+
+fn ellipse_border_color_corner_size(border: f64, color: vec4, corner: vec4, size: vec4)
+~ mut draw_list: [[]] {
+    ellipse(border: border, color: color, corner: corner, size: size, resolution: 16)
+}
+
+fn ellipse_color_corner_size_resolution
+(color: vec4, corner: vec4, size: vec4, resolution: f64)
+~ mut draw_list: [[]] {
+    push(mut draw_list, ["ellipse_color_corner_size_resolution", color, corner, size, resolution])
+}
+
+fn ellipse_border_color_corner_size_resolution
+(border: f64, color: vec4, corner: vec4, size: vec4, resolution: f64)
+~ mut draw_list: [[]] {
+    push(mut draw_list, ["ellipse_border_color_corner_size_resolution",
+        border, color, corner, size, resolution])
+}
+
+fn circle_color_center_radius(color: vec4, center: vec4, radius: f64)
+~ mut draw_list: [[]] {
+    width := 2 * radius
+    ellipse(color: color, corner: center - radius, size: (width, width))
+}
+
+fn circle_color_center_radius_resolution
+(color: vec4, center: vec4, radius: f64, resolution: f64)
+~ mut draw_list: [[]] {
+    width := 2 * radius
+    ellipse(color: color, corner: center - radius, size: (width, width),
+            resolution: resolution)
+}
+
+fn circle_border_color_center_radius(border: f64, color: vec4, center: vec4, radius: f64)
+~ mut draw_list: [[]] {
+    width := 2 * radius
+    ellipse(border: border, color: color, corner: center - radius, size: (width, width))
+}
+
+fn circle_border_color_center_radius_resolution
+(border: f64, color: vec4, center: vec4, radius: f64, resolution: f64)
+~ mut draw_list: [[]] {
+    width := 2 * radius
+    ellipse(border: border, color: color, corner: center - radius, size: (width, width),
+            resolution: resolution)
+}
+
+fn triangle_color_center_radius(color: vec4, center: vec4, radius: f64)
+~ mut draw_list: [[]] {
+    circle(color: color, center: center, radius: radius, resolution: 3)
+}
+
+fn transform_center_angle(center: vec4, angle: f64)
+~ mut draw_list: [[]] {
+    mat := rotate(x_y: xy center, angle: angle)
+    push(mut draw_list, ["transform_rx_ry", mat[0], mat[1]])
+}
+
+fn reset_transform()
+~ mut draw_list: [[]] {
+    mat := identity()
+    push(mut draw_list, ["transform_rx_ry", mat[0], mat[1]])
+}

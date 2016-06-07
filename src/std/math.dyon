@@ -1,0 +1,77 @@
+δ(x: f64) = if x == 0 { 1 } else { 0 }
+
+fn multiply_mat_mat(a: [vec4], b: [vec4]) -> [vec4] {
+    return sift i { vec4 j a[i] *. vec4 k s(b[k], j) }
+}
+
+fn identity() -> [vec4] {
+    return sift i 4 { vec4 j δ(i - j) }
+}
+
+fn translate(v: vec4) -> [vec4] {
+    return sift i 4 {
+        vec4 j δ(i - j) + δ(j - 3) * s(v, i)
+    }
+}
+
+rotate_angle(angle: f64) = [
+    (cos(angle), -sin(angle), 0, 0),
+    (sin(angle), cos(angle), 0, 0),
+    (0, 0, 1, 0),
+    (0, 0, 0, 1)
+]
+
+fn scale(s: f64) -> [vec4] {
+    return sift i 4 {
+        vec4 j if (i == j) and (i < 3) { s }
+               else if i == j { 1 }
+               else { 0 }
+    }
+}
+
+shear(v: vec4) = [
+    (1, x(v), 0, 0),
+    (y(v), 1, 0, 0),
+    (0, 0, 1, 0),
+    (0, 0, 0, 1)
+]
+
+fn orient(pos: vec4) -> [vec4] {
+    len := |pos|
+    if len == 0 { return identity() }
+    c := x(pos) / len
+    s := y(pos) / len
+    return [
+        (c, -s, 0, 0),
+        (s, c, 0, 0),
+        (0, 0, 1, 0),
+        (0, 0, 0, 1)
+    ]
+}
+
+fn print_mat(mat: [vec4]) {
+    for i {
+        print(x(mat[i]))
+        print(",")
+        print(y(mat[i]))
+        print(",")
+        print(z(mat[i]))
+        print(",")
+        print(w(mat[i]))
+        println("")
+    }
+    println("")
+}
+
+fn test() {
+    print(mat: identity())
+    print(mat: translate((2, 3, 4)))
+    print(mat: rotate(angle: 0.1))
+    print(mat: orient((0, 1)))
+    print(mat: scale(2))
+    print(mat: shear((1, 0)))
+
+    mat := multiply(mat: translate((2, 3)),
+                    mat: rotate(angle: 0.1))
+    println(mat)
+}

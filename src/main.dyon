@@ -1,0 +1,54 @@
+fn main() {
+    println(link {
+        "Dyon: ASTEROIDS\n"
+        "===============\n"
+        "Use W,A,S,D or arrows to steer, SPACE to shoot\n"
+    })
+
+    // TEST
+    // assets := unwrap(load("src/assets.dyon"))
+    // _ := unwrap(call_ret(assets, "load_assets", []))
+
+    test_math := false
+    test_utils := false
+
+    math := unwrap(load("src/std/math3.dyon"))
+    if test_math {
+        call(math, "test", [])
+        return
+    }
+
+    utils := unwrap(load("src/std/utils.dyon"))
+    if test_utils {
+        call(utils, "test", [])
+        return
+    }
+
+    input := unwrap(load("src/input.dyon"))
+    render := unwrap(load(source: "src/std/render.dyon", imports: [math]))
+    space := unwrap(load(source: "src/space.dyon", imports: [utils]))
+    bullets := unwrap(load(source: "src/bullets.dyon", imports: [space, render]))
+    spaceship := unwrap(load(source: "src/spaceship.dyon", imports: [bullets]))
+    explosions := unwrap(load(source: "src/explosions.dyon", imports: [utils, render]))
+    comets := unwrap(load(source: "src/comets.dyon", imports: [bullets, explosions]))
+    game := unwrap(load(source: "src/game.dyon",
+                        imports: [input, spaceship, bullets, comets, explosions]))
+    ~ world := call_ret(game, "init_world", [])
+    ~ bullets := call_ret(game, "init_bullets", [])
+    ~ comets := call_ret(game, "init_comets", [])
+    ~ explosions := call_ret(game, "init_explosions", [])
+    ~ collision_grid := call_ret(game, "init_collision_grid_settings",
+                                 [world.collision_settings])
+    ~ draw_list := []
+    loop {
+        if !next_event() { break }
+        if render() {
+            call(game, "render_world", [])
+        } else if update() {
+            ~ dt := unwrap(update_dt())
+            call(game, "update_world", [])
+        } else {
+            call(game, "event", [])
+        }
+    }
+}

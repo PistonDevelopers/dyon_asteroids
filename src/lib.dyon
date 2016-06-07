@@ -1,0 +1,88 @@
+/// Renders a list of draw commands.
+fn draw(draw_list: []) { ... }
+
+/// Returns `true` if there is a next event.
+fn next_event() -> bool { ... }
+
+/// ==== OBJ ====
+
+/// Loads a material from file, returning `ok(file)` if successful.
+fn load_material(file: str) -> res[str] { ... }
+
+/// Gets the index of a material.
+fn material(name: str) -> opt[f64] { ... }
+
+/// Get list of materials.
+fn materials() -> [str] { ... }
+
+/// Loads a 3D object from file, returning `ok(file)` if successful.
+fn load_obj(file: str) -> res[str] { ... }
+
+/// Gets the index of a 3D object.
+fn obj(name: str) -> opt[f64] { ... }
+
+/// Get a list of objects.
+fn objs() -> [str] { ... }
+
+/// Gets material library from 3D object index.
+fn material_library_obj(obj: f64) -> opt[str] { ... }
+
+/// Gets number of objects in a 3D obj.
+fn object_count_obj(obj: f64) -> f64 { ... }
+
+/// Gets list of objects from 3D object index.
+fn objects_obj(obj: f64) -> [str] { ... }
+
+/// Gets number of vertices of an object.
+fn vertex_count_obj_object(obj: f64, object: f64) -> f64 { ... }
+
+/// Gets number of texture coordinates of an object.
+fn tex_vertex_count_obj_object(obj: f64, object: f64) -> f64 { ... }
+
+/// Gets number of normals from an object.
+fn normal_count_obj_object(obj: f64, object: f64) -> f64 { ... }
+
+/// Gets number of geometries of an object.
+fn geometry_count_obj_object(obj: f64, object: f64) -> f64 { ... }
+
+/// Gets a single vertex.
+fn vertex_obj_object_vertex(obj: f64, object: f64, vertex: f64) -> vec4 { ... }
+
+/// Gets a single texture coordinate.
+fn tex_vertex_obj_object_tex_vertex(obj: f64, object: f64, tex_vertex: f64) -> vec4 { ... }
+
+/// Gets a single normal.
+fn normal_obj_object_normal(obj: f64, object: f64, normal: f64) -> vec4 { ... }
+
+/// Gets vertices of an object.
+fn vertices_obj_object(obj: f64, object: f64) -> [vec4] { ... }
+
+/// Gets texture coordinates of an object.
+fn tex_vertices_obj_object(obj: f64, object: f64) -> [vec4] { ... }
+
+/// Gets normals of an object.
+fn normals_obj_object(obj: f64, object: f64) -> [vec4] { ... }
+
+/// Gets geometry of an object.
+fn geometry_obj_object(obj: f64, object: f64) -> [{}] { ... }
+
+/// ==== SHADER ====
+
+/// Loads program from a vertex and fragment shader.
+/// Returns `ok(name)` if program is created successfully.
+fn load_program_name_vshader_fshader(name: str, vshader: str, fshader: str) -> res[str] { ... }
+
+/// Gets the index of a shader program.
+fn program(name: str) -> opt[f64] { ... }
+
+/// Creates a new empty vertex buffer.
+fn create_vertex_buffer_size(size: f64) -> res[f64] { ... }
+
+/// Creates a new empty index buffer.
+fn create_index_buffer_size(size: f64) -> res[f64] { ... }
+
+/// Fills a vertex buffer.
+fn fill_vertex_buffer_buffer_pos_norm(buffer: f64, pos: [vec4], norm: [vec4]) { ... }
+
+/// Fills an index buffer.
+fn fill_index_buffer_buffer_data(buffer: f64, data: [f64]) { ... }

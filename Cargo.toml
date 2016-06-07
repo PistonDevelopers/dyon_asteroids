@@ -2,6 +2,7 @@
 name = "dyon_asteroids"
 version = "0.1.0"
 authors = ["Sven Nilsen <bvssvni@gmail.com>"]
+exclude = ["/images/"]
 
 [dependencies.piston-dyon_interactive]
 git = "https://github.com/PistonDevelopers/dyon/"

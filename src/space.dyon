@@ -1,0 +1,18 @@
+fn is_outside_pos_space_offset(pos: vec4, space: vec4, offset: f64) -> bool {
+    return any i 2 {
+        (s(pos, i) < (-offset)) or (s(pos, i) > (s(space, i) + offset))
+    }
+}
+
+fn warp_pos_offset(pos: vec4, offset: f64) ~ space: vec4 -> vec4 {
+    x := x(pos)
+    y := y(pos)
+    double_offset := offset * 2
+    wx := x(space)
+    wy := y(space)
+    if x < -offset { x += wx + double_offset }
+    if y < -offset { y += wy + double_offset }
+    if x > wx + offset { x -= wx + double_offset }
+    if y > wy + offset { y -= wy + double_offset }
+    return (x, y)
+}

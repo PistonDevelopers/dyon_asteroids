@@ -1,0 +1,52 @@
+δ(x: f64) = if x == 0 { 1 } else { 0 }
+identity() = sift i 4, j 4 { δ(i - j) }
+multiply_mat_mat(a: [[f64]], b: [[f64]]) =
+    sift i, j 4 { sum k { a[i][k] * b[k][j] } }
+translate(x: f64, y: f64, z: f64) =
+    [
+        [1, 0, 0, clone(x)],
+        [0, 1, 0, clone(y)],
+        [0, 0, 1, clone(z)],
+        [0, 0, 0, 1],
+    ]
+rotate(angle) =
+    [
+        [cos(angle), -sin(angle), 0, 0],
+        [sin(angle), cos(angle), 0, 0],
+        [0, 0, 1, 0],
+        [0, 0, 0, 1]
+    ]
+scale(s: f64) =
+    [
+        [clone(s), 0, 0, 0],
+        [0, clone(s), 0, 0],
+        [0, 0, clone(s), 0],
+        [0, 0, 0, 1]
+    ]
+shear(x: f64, y: f64) = [
+        [1, clone(x), 0, 0],
+        [clone(y), 1, 0, 0],
+        [0, 0, 1, 0],
+        [0, 0, 0, 1]
+    ]
+orient(x: f64, y: f64) = {
+    len := |(x, y)|
+    if len == 0 { return identity() }
+    c := x / len
+    s := y / len
+    [
+        [clone(c), -s, 0, 0],
+        [clone(s), clone(c), 0, 0],
+        [0, 0, 1, 0],
+        [0, 0, 0, 1]
+    ]
+}
+transform_mat_vec(mat: [[f64]], v: vec4) = vec4 i (vec4 j mat[i][j]) *. v
+point(v: vec4) = (xyz v, 1)
+
+fn test() {
+    a := translate(xyz (1, 2))
+    b := translate(xyz (2, 1))
+    c := multiply(mat: a, mat: b)
+    println(c)
+}

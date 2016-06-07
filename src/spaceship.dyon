@@ -1,0 +1,40 @@
+
+fn move_spaceship()
+~ mut world: World,
+  dt: f64
+{
+    world.spaceship.angle += angle_motion_left_right(world)
+    dir := dir(angle: world.spaceship.angle)
+    world.spaceship.vel += dir * acceleration_forward_backward(world)
+
+    world.spaceship.pos += dt * world.spaceship.vel
+    world.spaceship.pos = warp(pos: world.spaceship.pos,
+                               offset: world.space_settings.offset)
+}
+
+fn angle_motion_left_right(world: World) -> f64 {
+    return world.input_settings.angle_vel *
+        (world.input_state.right - world.input_state.left)
+}
+
+/// Computes the acceleration for the direction forward/backward.
+fn acceleration_forward_backward(world: World) -> f64 {
+    return  world.input_settings.acceleration_forward *
+                world.input_state.forward -
+            world.input_settings.acceleration_backward *
+                world.input_state.backward
+}
+
+fn draw_spaceship(spaceship) ~ mut draw_list {
+    color := #ffffff
+    transform(center: spaceship.pos, angle: spaceship.angle)
+    triangle(color: color,
+             center: spaceship.pos, radius: 20)
+    triangle(color: color,
+             center: spaceship.pos + (15, 0), radius: 15)
+}
+
+fn draw_spaceship_3d(spaceship) {
+    draw(program: 0, vbuf: 0, ibuf: 0, pos: spaceship.pos,
+         angle: spaceship.angle, scale: 5)
+}

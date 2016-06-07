@@ -1,0 +1,87 @@
+explosion_pos() = 0
+explosion_vel() = 1
+explosion_radius() = 2
+explosion_border() = 3
+explosion_time() = 4
+
+/// Stores [position, velocity, radius, border, time]
+fn init_explosions() -> [Explosion []] {
+    return [[(0, 0), (0, 0), 0, 0, 0]; 30]
+}
+
+fn create_explosion_pos_vel_radius(pos: vec4, vel: vec4, radius: f64)
+~ mut world: World,
+  mut explosions: [Explosion []]
+{
+    n := world.free_explosion_slot
+    if n >= len(explosions) { return }
+
+    POS := explosion_pos()
+    VEL := explosion_vel()
+    RADIUS := explosion_radius()
+    BORDER := explosion_border()
+    TIME := explosion_time()
+
+    explosions[n][POS] = clone(pos)
+    explosions[n][VEL] = clone(vel)
+    explosions[n][RADIUS] = 0.5 * radius
+    explosions[n][BORDER] = 0.5 * radius
+    explosions[n][TIME] = 0
+
+    world.free_explosion_slot += 1
+}
+
+fn move_explosions()
+~ world: World,
+  mut explosions: [Explosion []],
+  dt: f64
+{
+    POS := explosion_pos()
+    VEL := explosion_vel()
+    RADIUS := explosion_radius()
+    TIME := explosion_time()
+
+    expand_speed := world.explosion_settings.expand_speed
+    for i world.free_explosion_slot {
+        explosions[i][POS] += dt * explosions[i][VEL]
+        explosions[i][RADIUS] += dt * expand_speed
+        explosions[i][TIME] += dt
+    }
+}
+
+fn remove_old_explosions()
+~ mut world: World,
+  mut explosions: [Explosion []]
+{
+    TIME := explosion_time()
+
+    max_time := world.explosion_settings.max_time
+    for i := world.free_explosion_slot - 1; i >= 0; i -= 1 {
+        if explosions[i][TIME] > max_time {
+            world.free_explosion_slot = swap_remove(mut explosions, i, world.free_explosion_slot)
+        }
+    }
+}
+
+
+fn draw_explosions_active
+(explosions: [Explosion []], active: f64)
+~ mut draw_list: [[]], world: World
+{
+    POS := explosion_pos()
+    VEL := explosion_vel()
+    RADIUS := explosion_radius()
+    BORDER := explosion_border()
+    TIME := explosion_time()
+
+    color := #ffffee
+    max_time := world.explosion_settings.max_time
+    reset_transform()
+    for i active {
+        center := explosions[i][POS]
+        radius := explosions[i][RADIUS]
+        border := explosions[i][BORDER]
+        color := (xyz color, 1 - explosions[i][TIME] / max_time)
+        circle(border: border, color: color, center: center, radius: radius, resolution: 32)
+    }
+}

@@ -1,0 +1,68 @@
+bullet_pos() = 0
+bullet_angle() = 1
+bullet_vel() = 2
+
+// Reserve space for 100 bullets.
+// Stores [position, angle, velocity]
+fn init_bullets() -> [Bullet []] {
+    return [[(0, 0), 0, (0, 0)]; 200]
+}
+
+fn move_bullets()
+~ world: World,
+  mut bullets: [Bullet []],
+  dt: f64
+{
+    POS := bullet_pos()
+    VEL := bullet_vel()
+
+    for i world.free_bullet_slot {
+        bullets[i][POS] += dt * bullets[i][VEL]
+        /* // Warp position of bullets.
+        bullets[i][0] = warp(pos: bullets[i][0], space: space,
+            offset: world.space_settings.offset)
+        */
+    }
+}
+
+fn remove_hidden_bullets_world_offset(mut world, offset)
+~ mut bullets: [Bullet []], space: vec4 {
+    for i := world.free_bullet_slot - 1; i >= 0; i -= 1 {
+        if is_outside(pos: bullets[i][0], space: space, offset: offset) {
+            world.free_bullet_slot = swap_remove(mut bullets, i, world.free_bullet_slot)
+        }
+    }
+}
+
+fn fire_world_dt(mut world, dt) ~ mut bullets: [Bullet []] {
+    POS := bullet_pos()
+    ANGLE := bullet_angle()
+    VEL := bullet_vel()
+
+    world.spaceship.fire_dt += dt
+    if world.spaceship.fire_dt < world.bullet_settings.interval { return }
+    if world.input_state.fire != 1 { return }
+    world.spaceship.fire_dt = 0
+    if (world.free_bullet_slot + 1) < len(bullets) {
+        n := world.free_bullet_slot
+        bullets[n][POS] = clone(world.spaceship.pos)
+        bullets[n][ANGLE] = clone(world.spaceship.angle)
+        bullets[n][VEL] = world.spaceship.vel +
+            world.bullet_settings.speed * dir(angle: world.spaceship.angle)
+        world.free_bullet_slot += 1
+    }
+}
+
+fn draw_bullets_active(bullets: [Bullet []], active: f64)
+~ mut draw_list
+{
+    POS := bullet_pos()
+    ANGLE := bullet_angle()
+
+    color := #ffff00
+    reset_transform()
+    for i active {
+        line(color: color, radius: 1,
+             from: bullets[i][POS], to: bullets[i][POS] + 15 * dir(angle: bullets[i][ANGLE]))
+    }
+}

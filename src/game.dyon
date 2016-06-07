@@ -1,0 +1,94 @@
+
+fn init_world() -> World {
+    comet_hit_radius := 10
+    return {
+        input_state: {
+            left: 0,
+            right: 0,
+            forward: 0,
+            backward: 0,
+            fire: 0,
+        },
+        input_settings: {
+            angle_vel: 0.010,
+            acceleration_forward: 1.0,
+            acceleration_backward: 1.0,
+        },
+        spaceship: {
+            pos: (300, 300),
+            vel: (10, 0),
+            angle: 0,
+            fire_dt: 0,
+        },
+        free_bullet_slot: 0,
+        free_comet_slot: 0,
+        free_explosion_slot: 0,
+        bullet_settings: {
+            speed: 200,
+            interval: 0.25,
+        },
+        comet_settings: {
+            radius: 30,
+            hit_radius: clone(comet_hit_radius),
+            min_radius: 10,
+            speed: 30,
+            spawn_probability: 0.0001,
+        },
+        explosion_settings: {
+            max_time: 2,
+            expand_speed: 20
+        },
+        space_settings: {
+            offset: 30,
+        },
+        collision_settings: {
+            window_size := window_size()
+            units := comet_hit_radius / sqrt(2)
+
+            {
+                units: clone(units),
+                w: ceil(x(window_size) / units),
+                h: ceil(y(window_size) / units)
+            }
+        }
+    }
+}
+
+fn render_world()
+~ world: World,
+  bullets: [Bullet []],
+  comets: [Comet []],
+  explosions: [Explosion []],
+  mut draw_list: [[]]
+{
+    clear(color: #000000)
+    draw(explosions: explosions, active: world.free_explosion_slot)
+    draw(bullets: bullets, active: world.free_bullet_slot)
+    draw(comets: comets, active: world.free_comet_slot)
+    draw(spaceship: world.spaceship)
+    draw(draw_list)
+    clear(mut draw_list)
+
+    // TEST
+    // draw_spaceship_3d(world.spaceship)
+}
+
+fn update_world()
+~ mut world: World,
+  dt: f64,
+  mut bullets: [Bullet []],
+  mut comets: [Comet []],
+  mut collision_grid: CollisionGrid [[f64]]
+{
+    ~ space := window_size()
+
+    spawn_comets()
+    fire(world: mut world, dt: dt)
+    move_spaceship()
+    move_bullets()
+    move_comets()
+    move_explosions()
+    shoot_comets()
+    remove_hidden_bullets(world: mut world, offset: world.space_settings.offset)
+    remove_old_explosions()
+}

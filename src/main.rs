@@ -20,7 +20,8 @@ use piston::input::Event;
 use dyon::{error, load, Module, Runtime};
 use current::CurrentGuard;
 
-use engine::{IndexBuffers, Materials, MusicTracks, ObjSets, Programs, VertexBuffers};
+use engine::{IndexBuffers, Materials, MusicTracks, ObjSets, Programs,
+    SoundTracks, VertexBuffers};
 
 mod engine;
 
@@ -53,6 +54,7 @@ fn main() {
     let mut vertex_buffers: VertexBuffers = vec![];
     let mut index_buffers: IndexBuffers = vec![];
     let mut music_tracks: MusicTracks = vec![];
+    let mut sound_tracks: SoundTracks = vec![];
 
     {
         let window_guard = CurrentGuard::new(window);
@@ -65,9 +67,11 @@ fn main() {
         let vertex_buffers_guard = CurrentGuard::new(&mut vertex_buffers);
         let index_buffers_guard = CurrentGuard::new(&mut index_buffers);
         let music_tracks_guard = CurrentGuard::new(&mut music_tracks);
+        let sound_tracks_guard = CurrentGuard::new(&mut sound_tracks);
         if error(runtime.run(&module)) {
             return;
         }
+        drop(sound_tracks_guard);
         drop(music_tracks_guard);
         drop(index_buffers_guard);
         drop(vertex_buffers_guard);

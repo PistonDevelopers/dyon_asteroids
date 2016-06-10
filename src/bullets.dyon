@@ -50,6 +50,9 @@ fn fire__world_dt(mut world, dt) ~ mut bullets: [Bullet []] {
         bullets[n][VEL] = world.spaceship.vel +
             world.bullet_settings.speed * dir(angle: world.spaceship.angle)
         world.free_bullet_slot += 1
+
+        LASER_SOUND := 0
+        play_once(sound: LASER_SOUND)
     }
 }
 

@@ -25,7 +25,7 @@ fn acceleration_forward_backward(world: World) -> f64 {
                 world.input_state.backward
 }
 
-fn draw_spaceship(spaceship) ~ mut draw_list {
+fn draw__spaceship(spaceship) ~ mut draw_list {
     color := #ffffff
     transform(center: spaceship.pos, angle: spaceship.angle)
     triangle(color: color,
@@ -35,6 +35,17 @@ fn draw_spaceship(spaceship) ~ mut draw_list {
 }
 
 fn draw_spaceship_3d(spaceship) {
-    draw(program: 0, vbuf: 0, ibuf: 0, pos: spaceship.pos,
-         angle: spaceship.angle, scale: 5)
+    program := 0
+    scale := 5
+    metal_vbuf := 0
+    metal_ibuf := 0
+    glass_vbuf := 1
+    glass_ibuf := 1
+
+    draw(program: program, vbuf: metal_vbuf, ibuf: metal_ibuf, pos: spaceship.pos,
+         angle: spaceship.angle, scale: scale, color: #333333)
+    draw(program: program, vbuf: glass_vbuf, ibuf: glass_ibuf, pos: spaceship.pos,
+         angle: spaceship.angle, scale: scale, color: #111111)
+    // draw(program: program, vbuf: 2, ibuf: 2, pos: spaceship.pos,
+    //      angle: spaceship.angle, scale: 20, color: #ffff00)
 }

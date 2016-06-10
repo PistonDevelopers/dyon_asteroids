@@ -18,8 +18,8 @@ pub struct Vertex {
 implement_vertex!{Vertex, pos, norm}
 
 pub fn register_shader(module: &mut Module) {
-    module.add(Arc::new("load_program_name_vshader_fshader".into()),
-        load_program_name_vshader_fshader, PreludeFunction {
+    module.add(Arc::new("load_program__name_vshader_fshader".into()),
+        load_program__name_vshader_fshader, PreludeFunction {
             lts: vec![Lt::Default; 3],
             tys: vec![Type::Text; 3],
             ret: Type::Result(Box::new(Type::Text))
@@ -30,40 +30,60 @@ pub fn register_shader(module: &mut Module) {
             tys: vec![Type::Text],
             ret: Type::Option(Box::new(Type::F64))
         });
-    module.add(Arc::new("create_vertex_buffer_size".into()),
-        create_vertex_buffer_size, PreludeFunction {
+    module.add(Arc::new("count_vertex_buffers".into()),
+        count_vertex_buffers, PreludeFunction {
+            lts: vec![],
+            tys: vec![],
+            ret: Type::F64
+        });
+    module.add(Arc::new("count_index_buffers".into()),
+        count_index_buffers, PreludeFunction {
+            lts: vec![],
+            tys: vec![],
+            ret: Type::F64
+        });
+    module.add(Arc::new("create_vertex_buffer__size".into()),
+        create_vertex_buffer__size, PreludeFunction {
             lts: vec![Lt::Default],
             tys: vec![Type::F64],
             ret: Type::Result(Box::new(Type::F64))
         });
-    module.add(Arc::new("create_index_buffer_size".into()),
-        create_index_buffer_size, PreludeFunction {
+    module.add(Arc::new("create_index_buffer__size".into()),
+        create_index_buffer__size, PreludeFunction {
             lts: vec![Lt::Default],
             tys: vec![Type::F64],
             ret: Type::Result(Box::new(Type::F64))
         });
-    module.add(Arc::new("fill_vertex_buffer_buffer_pos_norm".into()),
-        fill_vertex_buffer_buffer_pos_norm, PreludeFunction {
+    module.add(Arc::new("fill_vertex_buffer__buffer_pos_norm".into()),
+        fill_vertex_buffer__buffer_pos_norm, PreludeFunction {
             lts: vec![Lt::Default; 3],
             tys: vec![Type::F64, Type::Array(Box::new(Type::Vec4)),
                 Type::Array(Box::new(Type::Vec4))],
             ret: Type::Void
         });
-    module.add(Arc::new("fill_index_buffer_buffer_data".into()),
-        fill_index_buffer_buffer_data, PreludeFunction {
+    module.add(Arc::new("fill_index_buffer__buffer_data".into()),
+        fill_index_buffer__buffer_data, PreludeFunction {
             lts: vec![Lt::Default; 2],
             tys: vec![Type::F64, Type::Array(Box::new(Type::F64))],
             ret: Type::Void
         });
-    module.add(Arc::new("draw_program_vbuf_ibuf_pos_angle_scale".into()),
-        draw_program_vbuf_ibuf_pos_angle_scale, PreludeFunction {
-            lts: vec![Lt::Default; 6],
-            tys: vec![Type::F64, Type::F64, Type::F64, Type::Vec4, Type::F64, Type::F64],
+    module.add(Arc::new("clear_depth".into()),
+        clear_depth, PreludeFunction {
+            lts: vec![],
+            tys: vec![],
+            ret: Type::Void
+        });
+    module.add(Arc::new("draw__program_vbuf_ibuf_pos_angle_scale_color".into()),
+        draw__program_vbuf_ibuf_pos_angle_scale_color, PreludeFunction {
+            lts: vec![Lt::Default; 7],
+            tys: vec![Type::F64, Type::F64, Type::F64,
+                      Type::Vec4, Type::F64, Type::F64,
+                      Type::Vec4],
             ret: Type::Void
         });
 }
 
-dyon_fn!{fn load_program_name_vshader_fshader(
+dyon_fn!{fn load_program__name_vshader_fshader(
     name: Arc<String>,
     vshader: Arc<String>,
     fshader: Arc<String>
@@ -93,7 +113,17 @@ dyon_fn!{fn program(name: Arc<String>) -> Option<usize> {
     None
 }}
 
-dyon_fn!{fn create_vertex_buffer_size(size: usize) -> Result<usize, String> {
+dyon_fn!{fn count_vertex_buffers() -> usize {
+    let vertex_buffers = unsafe { &*Current::<VertexBuffers>::new() };
+    vertex_buffers.len()
+}}
+
+dyon_fn!{fn count_index_buffers() -> usize {
+    let index_buffers = unsafe { &*Current::<IndexBuffers>::new() };
+    index_buffers.len()
+}}
+
+dyon_fn!{fn create_vertex_buffer__size(size: usize) -> Result<usize, String> {
     use std::error::Error;
 
     let vertex_buffers = unsafe { &mut *Current::<VertexBuffers>::new() };
@@ -105,7 +135,7 @@ dyon_fn!{fn create_vertex_buffer_size(size: usize) -> Result<usize, String> {
     Ok(n)
 }}
 
-dyon_fn!{fn create_index_buffer_size(size: usize) -> Result<usize, String> {
+dyon_fn!{fn create_index_buffer__size(size: usize) -> Result<usize, String> {
     use std::error::Error;
 
     let index_buffers = unsafe { &mut *Current::<IndexBuffers>::new() };
@@ -118,7 +148,7 @@ dyon_fn!{fn create_index_buffer_size(size: usize) -> Result<usize, String> {
     Ok(n)
 }}
 
-dyon_fn!{fn fill_vertex_buffer_buffer_pos_norm
+dyon_fn!{fn fill_vertex_buffer__buffer_pos_norm
     (buffer: usize, pos: Vec<Vec4>, norm: Vec<Vec4>) {
     let vertex_buffers = unsafe { &mut *Current::<VertexBuffers>::new() };
 
@@ -129,15 +159,30 @@ dyon_fn!{fn fill_vertex_buffer_buffer_pos_norm
     });
 }}
 
-dyon_fn!{fn fill_index_buffer_buffer_data(buffer: usize, data: Vec<u32>) {
+dyon_fn!{fn fill_index_buffer__buffer_data(buffer: usize, data: Vec<u32>) {
     let index_buffers = unsafe { &*Current::<IndexBuffers>::new() };
 
     index_buffers[buffer].write(&data);
 }}
 
-dyon_fn!{fn draw_program_vbuf_ibuf_pos_angle_scale
-    (program: usize, vbuf: usize, ibuf: usize, pos: Vec4, angle: f32, scale: f32) {
+dyon_fn!{fn clear_depth() {
     use glium::{Frame, Surface};
+
+    let target = unsafe { &mut *Current::<Frame>::new() };
+    target.clear_depth(1.0);
+}}
+
+dyon_fn!{fn draw__program_vbuf_ibuf_pos_angle_scale_color(
+    program: usize,
+    vbuf: usize,
+    ibuf: usize,
+    pos: Vec4,
+    angle: f32,
+    scale: f32,
+    color: Vec4
+) {
+    use glium::{Depth, DepthTest, Frame, Surface};
+    use glium::draw_parameters::{DepthClamp, DrawParameters};
     use piston::input::{Event, RenderEvent};
     use super::math;
 
@@ -151,10 +196,11 @@ dyon_fn!{fn draw_program_vbuf_ibuf_pos_angle_scale
     let e = unsafe { &*Current::<Option<Event>>::new() };
     let mat: [[f32; 4]; 4] = if let Some(args) = e.as_ref().unwrap().render_args() {
         let mat: [[f32; 3]; 2] = args.viewport().abs_transform();
+        let sz = -0.1;
         [
             [mat[0][0], mat[1][0], 0.0, 0.0],
             [mat[0][1], mat[1][1], 0.0, 0.0],
-            [0.0, 0.0, 1.0, 0.0],
+            [0.0, 0.0, sz, 0.0],
             [mat[0][2], mat[1][2], 0.0, 1.0]
         ]
     } else {
@@ -177,5 +223,13 @@ dyon_fn!{fn draw_program_vbuf_ibuf_pos_angle_scale
     ];
     */
     target.draw(&vertex_buffers[vbuf], &index_buffers[ibuf], &programs[program].1,
-        &uniform!{mvp: mvp}, &Default::default()).unwrap();
+        &uniform!{mvp: mvp, color: color.0}, &DrawParameters {
+            depth: Depth {
+                test: DepthTest::IfLess,
+                write: true,
+                range: (0.0, 1.0),
+                clamp: DepthClamp::NoClamp,
+            },
+            ..Default::default()
+        }).unwrap();
 }}

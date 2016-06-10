@@ -65,12 +65,13 @@ fn render_world()
     draw(explosions: explosions, active: world.free_explosion_slot)
     draw(bullets: bullets, active: world.free_bullet_slot)
     draw(comets: comets, active: world.free_comet_slot)
-    draw(spaceship: world.spaceship)
+    // draw(spaceship: world.spaceship)
     draw(draw_list)
     clear(mut draw_list)
 
     // TEST
-    // draw_spaceship_3d(world.spaceship)
+    clear_depth()
+    draw_spaceship_3d(world.spaceship)
 }
 
 fn update_world()

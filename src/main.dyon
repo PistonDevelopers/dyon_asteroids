@@ -6,8 +6,8 @@ fn main() {
     })
 
     // TEST
-    // assets := unwrap(load("src/assets.dyon"))
-    // _ := unwrap(call_ret(assets, "load_assets", []))
+    assets := unwrap(load("src/assets.dyon"))
+    _ := unwrap(call_ret(assets, "load_assets", []))
 
     test_math := false
     test_utils := false

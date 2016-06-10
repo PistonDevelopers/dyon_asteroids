@@ -55,6 +55,24 @@ fn load_assets() -> res {
     default_index := program(default)?
     println(default_index)
 
+    println("\nMUSIC")
+    music := load(music: "assets/music/space-of-silence.wav")?
+    println(music)
+    music_index := music(music)?
+    play_forever(music: music_index)
+
+    laser := load(sound: "assets/sounds/laser.wav")?
+    println(laser)
+    laser_index := sound(laser)?
+    set(sound: laser_index, volume: 10)
+    // play_once(sound: laser_index)
+    println(laser_index)
+
+    explosion := load(sound: "assets/sounds/explosion.wav")?
+    println(explosion)
+    explosion_index := sound(explosion)?
+    println(explosion_index)
+
     return ok("Assets loaded")
 }
 

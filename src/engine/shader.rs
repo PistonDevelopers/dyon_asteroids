@@ -73,12 +73,12 @@ pub fn register_shader(module: &mut Module) {
             tys: vec![],
             ret: Type::Void
         });
-    module.add(Arc::new("draw__program_vbuf_ibuf_pos_angle_scale_color".into()),
-        draw__program_vbuf_ibuf_pos_angle_scale_color, PreludeFunction {
-            lts: vec![Lt::Default; 7],
+    module.add(Arc::new("draw__program_vbuf_ibuf_pos_angle_scale_color_anglex".into()),
+        draw__program_vbuf_ibuf_pos_angle_scale_color_anglex, PreludeFunction {
+            lts: vec![Lt::Default; 8],
             tys: vec![Type::F64, Type::F64, Type::F64,
                       Type::Vec4, Type::F64, Type::F64,
-                      Type::Vec4],
+                      Type::Vec4, Type::F64],
             ret: Type::Void
         });
 }
@@ -172,14 +172,15 @@ dyon_fn!{fn clear_depth() {
     target.clear_depth(1.0);
 }}
 
-dyon_fn!{fn draw__program_vbuf_ibuf_pos_angle_scale_color(
+dyon_fn!{fn draw__program_vbuf_ibuf_pos_angle_scale_color_anglex(
     program: usize,
     vbuf: usize,
     ibuf: usize,
     pos: Vec4,
     angle: f32,
     scale: f32,
-    color: Vec4
+    color: Vec4,
+    angle_x: f32
 ) {
     use glium::{Depth, DepthTest, Frame, Surface};
     use glium::draw_parameters::{DepthClamp, DrawParameters};
@@ -196,7 +197,7 @@ dyon_fn!{fn draw__program_vbuf_ibuf_pos_angle_scale_color(
     let e = unsafe { &*Current::<Option<Event>>::new() };
     let mat: [[f32; 4]; 4] = if let Some(args) = e.as_ref().unwrap().render_args() {
         let mat: [[f32; 3]; 2] = args.viewport().abs_transform();
-        let sz = -0.1;
+        let sz = -0.01;
         [
             [mat[0][0], mat[1][0], 0.0, 0.0],
             [mat[0][1], mat[1][1], 0.0, 0.0],
@@ -212,7 +213,13 @@ dyon_fn!{fn draw__program_vbuf_ibuf_pos_angle_scale_color(
     let target = unsafe { &mut *Current::<Frame>::new() };
     let mvp = math::mul(mat, math::mul(
         pos_transform,
-        math::mul(math::rotate_angle(angle), math::scale(scale))
+        math::mul(
+            math::mul(
+                math::rotate_angle(angle),
+                math::scale(scale)
+            ),
+            math::rotate_angle_x(angle_x)
+        )
     ));
     /*
     let mvp: [[f32; 4]; 4] = [

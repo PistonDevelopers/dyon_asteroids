@@ -55,6 +55,12 @@ fn load_assets() -> res {
     default_index := program(default)?
     println(default_index)
 
+    println("\nMUSIC")
+    music := load(music: "assets/music/space-of-silence.wav")?
+    println(music)
+    music_index := music(music)?
+    play_forever(music: music_index)
+
     return ok("Assets loaded")
 }
 

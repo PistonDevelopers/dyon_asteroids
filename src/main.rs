@@ -7,17 +7,20 @@ extern crate dyon;
 extern crate current;
 extern crate dyon_interactive;
 extern crate sdl2_window;
+extern crate sdl2;
+extern crate sdl2_mixer;
 extern crate wavefront_obj;
 extern crate vecmath;
 
 use sdl2_window::Sdl2Window;
+use sdl2_mixer as mix;
 use glium_graphics::{Glium2d, GliumWindow, OpenGL};
 use piston::window::WindowSettings;
 use piston::input::Event;
 use dyon::{error, load, Module, Runtime};
 use current::CurrentGuard;
 
-use engine::{IndexBuffers, Materials, ObjSets, Programs, VertexBuffers};
+use engine::{IndexBuffers, Materials, MusicTracks, ObjSets, Programs, VertexBuffers};
 
 mod engine;
 
@@ -34,6 +37,13 @@ fn main() {
         Some(m) => m
     };
 
+    init_audio();
+
+    let (audio, timer) = {
+        let ref sdl = window.window.borrow().sdl_context;
+        (sdl.audio().unwrap(), sdl.timer().unwrap())
+    };
+
     let mut g2d = Glium2d::new(opengl, window);
     let mut e: Option<Event> = None;
     let mut target = window.draw();
@@ -42,6 +52,7 @@ fn main() {
     let mut programs: Programs = vec![];
     let mut vertex_buffers: VertexBuffers = vec![];
     let mut index_buffers: IndexBuffers = vec![];
+    let mut music_tracks: MusicTracks = vec![];
 
     {
         let window_guard = CurrentGuard::new(window);
@@ -53,9 +64,11 @@ fn main() {
         let programs_guard = CurrentGuard::new(&mut programs);
         let vertex_buffers_guard = CurrentGuard::new(&mut vertex_buffers);
         let index_buffers_guard = CurrentGuard::new(&mut index_buffers);
+        let music_tracks_guard = CurrentGuard::new(&mut music_tracks);
         if error(runtime.run(&module)) {
             return;
         }
+        drop(music_tracks_guard);
         drop(index_buffers_guard);
         drop(vertex_buffers_guard);
         drop(programs_guard);
@@ -68,8 +81,31 @@ fn main() {
     }
 
     target.finish().unwrap();
+
+    drop(timer);
+    drop(audio);
+    drop(window);
 }
 
+fn init_audio() {
+    // Load dynamic libraries.
+    // Ignore formats that are not built in.
+    let _ = mix::init(
+          mix::INIT_MP3
+        | mix::INIT_FLAC
+        | mix::INIT_MOD
+        | mix::INIT_FLUIDSYNTH
+        | mix::INIT_MODPLUG
+        | mix::INIT_OGG
+    );
+    mix::open_audio(
+        mix::DEFAULT_FREQUENCY,
+        mix::DEFAULT_FORMAT,
+        mix::DEFAULT_CHANNELS,
+        1024
+    ).unwrap();
+    mix::allocate_channels(mix::DEFAULT_CHANNELS);
+}
 
 fn load_module() -> Option<Module> {
     use std::sync::Arc;
@@ -92,6 +128,7 @@ fn load_module() -> Option<Module> {
         });
     engine::register_obj(&mut module);
     engine::register_shader(&mut module);
+    engine::register_sound(&mut module);
     if error(load("src/main.dyon", &mut module)) {
         None
     } else {

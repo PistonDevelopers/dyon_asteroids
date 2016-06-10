@@ -18,18 +18,36 @@ fn load_assets() -> res {
 
     println("\nPREPARE")
 
-    prep := prepare(obj: 0, material: "metal")
-    // println(prep)
-    println(len(prep.vertices))
-    println(len(prep.normals))
-    println(len(prep.indices))
-    // println(link {"All quads: "all_quads(prep)})
+    materials := ["metal", "glass"]
+    for i {
+        mat := prepare(obj: 0, material: materials[i])
+        println(len(mat.vertices))
+        println(len(mat.normals))
+        println(len(mat.indices))
+
+        vertex_buffer := create_vertex_buffer(size: len(mat.vertices))?
+        fill_vertex_buffer(buffer: vertex_buffer, pos: mat.vertices, norm: mat.normals)
+        index_buffer := create_index_buffer(size: len(mat.indices))?
+        fill_index_buffer(buffer: index_buffer, data: mat.indices)
+    }
+
+    /* TEST triangle
+    vb := create_vertex_buffer(size: 3)?
+    fill_vertex_buffer(buffer: vb, pos: [
+            (0, -0.5), (0, 0.5), (0.5, -0.5)
+        ], norm: [(0, 0, 1); 3])
+    ib := create_index_buffer(size: 3)?
+    fill_index_buffer(buffer: ib, data: [0, 1, 2])
+    */
+
+    println(count_vertex_buffers())
+    println(count_index_buffers())
 
     println("\nPROGRAMS")
     vshader := load_string(file: "assets/shaders/150_core.glslv")?
     fshader := load_string(file: "assets/shaders/150_core.glslf")?
-    default := load(
-        program_name: "default",
+    default := load_program(
+        name: "default",
         vshader: vshader,
         fshader: fshader
     )?
@@ -37,31 +55,10 @@ fn load_assets() -> res {
     default_index := program(default)?
     println(default_index)
 
-    vertex_buffer := create_vertex_buffer(size: len(prep.vertices))?
-    fill_vertex_buffer(buffer: vertex_buffer, pos: prep.vertices, norm: prep.normals)
-    index_buffer := create_index_buffer(size: len(prep.indices))?
-    fill_index_buffer(buffer: index_buffer, data: prep.indices)
-
-    /*
-    vertex_buffer := create_vertex_buffer(size: 3)?
-    println(vertex_buffer)
-
-    index_buffer := create_index_buffer(size: 3)?
-    println(index_buffer)
-
-    fill_vertex_buffer(buffer: vertex_buffer, pos: [
-            200*(0.0, -0.5), 200*(0, 0.5), 200*(0.5, -0.5)
-        ], norm: [(0, 0, 1); 3])
-
-    fill_index_buffer(buffer: index_buffer, data: [
-            0, 1, 2
-        ])
-    */
-
     return ok("Assets loaded")
 }
 
-fn prepare_obj_material(obj: f64, material: str) -> Indices {} {
+fn prepare__obj_material(obj: f64, material: str) -> Indices {} {
     indices := []
     vertices := []
     normals := []
@@ -87,6 +84,7 @@ fn prepare_obj_material(obj: f64, material: str) -> Indices {} {
         ns := normals(obj: obj, object: o)
         for i {
             // Flip z and y axis.
+            p := vs[pos[i]]
             pos := (xzy vs[pos[i]],)
             norm := ns[norm[i]]
             added := any i {
@@ -149,7 +147,7 @@ fn all_quads(strips: [Strip {}]) -> bool {
     return all i { len(strips[i].pos) == 4 }
 }
 
-fn info_obj_short(obj: str, short: bool) -> res[link] {
+fn info__obj_short(obj: str, short: bool) -> res[link] {
     obj_index := obj(obj)?
     material_library := material_library(obj: obj_index)?
     objects := objects(obj: obj_index)
@@ -161,7 +159,7 @@ fn info_obj_short(obj: str, short: bool) -> res[link] {
             l := link {}
             for i {
                 l += "\n{name: "
-                l += json(string: objects[i])
+                l += json_string(objects[i])
                 l += ", "
 
                 n := vertex_count(obj: obj_index, object: i)
@@ -172,7 +170,7 @@ fn info_obj_short(obj: str, short: bool) -> res[link] {
                 }
                 if !short {
                     l += "\nvertices: "
-                    l += to_string(vertices(obj: obj_index, object: i))
+                    l += str(vertices(obj: obj_index, object: i))
                     l += ", "
                 }
 
@@ -184,7 +182,7 @@ fn info_obj_short(obj: str, short: bool) -> res[link] {
                 }
                 if !short {
                     l += "\ntex_vertices: "
-                    l += to_string(tex_vertices(obj: obj_index, object: i))
+                    l += str(tex_vertices(obj: obj_index, object: i))
                     l += ", "
                 }
 
@@ -196,7 +194,7 @@ fn info_obj_short(obj: str, short: bool) -> res[link] {
                 }
                 if !short {
                     l += "\nnormals: "
-                    l += to_string(normals(obj: obj_index, object: i))
+                    l += str(normals(obj: obj_index, object: i))
                     l += ", "
                 }
 
@@ -208,7 +206,7 @@ fn info_obj_short(obj: str, short: bool) -> res[link] {
                 }
                 if !short {
                     l += "\ngeometry: "
-                    l += to_string(geometry(obj: obj_index, object: i))
+                    l += str(geometry(obj: obj_index, object: i))
                     l += ", "
                 }
 

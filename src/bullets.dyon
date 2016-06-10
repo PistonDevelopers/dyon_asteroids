@@ -25,7 +25,7 @@ fn move_bullets()
     }
 }
 
-fn remove_hidden_bullets_world_offset(mut world, offset)
+fn remove_hidden_bullets__world_offset(mut world, offset)
 ~ mut bullets: [Bullet []], space: vec4 {
     for i := world.free_bullet_slot - 1; i >= 0; i -= 1 {
         if is_outside(pos: bullets[i][0], space: space, offset: offset) {
@@ -34,7 +34,7 @@ fn remove_hidden_bullets_world_offset(mut world, offset)
     }
 }
 
-fn fire_world_dt(mut world, dt) ~ mut bullets: [Bullet []] {
+fn fire__world_dt(mut world, dt) ~ mut bullets: [Bullet []] {
     POS := bullet_pos()
     ANGLE := bullet_angle()
     VEL := bullet_vel()
@@ -53,7 +53,7 @@ fn fire_world_dt(mut world, dt) ~ mut bullets: [Bullet []] {
     }
 }
 
-fn draw_bullets_active(bullets: [Bullet []], active: f64)
+fn draw__bullets_active(bullets: [Bullet []], active: f64)
 ~ mut draw_list
 {
     POS := bullet_pos()

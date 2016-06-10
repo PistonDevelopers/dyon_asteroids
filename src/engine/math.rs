@@ -9,6 +9,15 @@ pub fn rotate_angle(angle: f32) -> [[f32; 4]; 4] {
     ]
 }
 
+pub fn rotate_angle_x(angle: f32) -> [[f32; 4]; 4] {
+    [
+        [1.0, 0.0, 0.0, 0.0],
+        [0.0, angle.cos(), angle.sin(), 0.0],
+        [0.0, -angle.sin(), angle.cos(), 0.0],
+        [0.0, 0.0, 0.0, 1.0]
+    ]
+}
+
 pub fn scale(s: f32) -> [[f32; 4]; 4] {
     [
         [s, 0.0, 0.0, 0.0],

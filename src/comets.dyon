@@ -31,7 +31,7 @@ fn spawn_comets()
     )
 }
 
-fn create_comet_slot_pos_radius_angle(slot: f64, pos: vec4, radius: opt[f64], angle: opt[f64])
+fn create_comet__slot_pos_radius_angle(slot: f64, pos: vec4, radius: opt[f64], angle: opt[f64])
 ~ world: World,
   mut comets: [Comet []]
 -> f64
@@ -163,7 +163,7 @@ fn shoot_comets()
     }
 }
 
-fn draw_comets_active
+fn draw__comets_active
 (comets: [Comet []], active: f64)
 ~ mut draw_list
 {

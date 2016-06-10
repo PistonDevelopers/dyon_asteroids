@@ -10,6 +10,9 @@ fn move_spaceship()
     world.spaceship.pos += dt * world.spaceship.vel
     world.spaceship.pos = warp(pos: world.spaceship.pos,
                                offset: world.space_settings.offset)
+
+    target_roll := -world.spaceship.roll_max * (world.input_state.right - world.input_state.left)
+    world.spaceship.roll += world.spaceship.roll_change * dt * (target_roll - world.spaceship.roll)
 }
 
 fn angle_motion_left_right(world: World) -> f64 {
@@ -25,7 +28,7 @@ fn acceleration_forward_backward(world: World) -> f64 {
                 world.input_state.backward
 }
 
-fn draw_spaceship(spaceship) ~ mut draw_list {
+fn draw__spaceship(spaceship) ~ mut draw_list {
     color := #ffffff
     transform(center: spaceship.pos, angle: spaceship.angle)
     triangle(color: color,
@@ -34,7 +37,19 @@ fn draw_spaceship(spaceship) ~ mut draw_list {
              center: spaceship.pos + (15, 0), radius: 15)
 }
 
-fn draw_spaceship_3d(spaceship) {
-    draw(program: 0, vbuf: 0, ibuf: 0, pos: spaceship.pos,
-         angle: spaceship.angle, scale: 5)
+fn draw_spaceship_3d(spaceship) ~ world {
+    program := 0
+    scale := 5
+    metal_vbuf := 0
+    metal_ibuf := 0
+    glass_vbuf := 1
+    glass_ibuf := 1
+    anglex := spaceship.roll
+
+    draw(program: program, vbuf: metal_vbuf, ibuf: metal_ibuf, pos: spaceship.pos,
+         angle: spaceship.angle, scale: scale, color: #333333, anglex: anglex)
+    draw(program: program, vbuf: glass_vbuf, ibuf: glass_ibuf, pos: spaceship.pos,
+         angle: spaceship.angle, scale: scale, color: #111111, anglex: anglex)
+    // draw(program: program, vbuf: 2, ibuf: 2, pos: spaceship.pos,
+    //      angle: spaceship.angle, scale: 20, color: #ffff00)
 }

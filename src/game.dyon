@@ -10,7 +10,7 @@ fn init_world() -> World {
             fire: 0,
         },
         input_settings: {
-            angle_vel: 0.010,
+            angle_vel: 0.015,
             acceleration_forward: 1.0,
             acceleration_backward: 1.0,
         },
@@ -19,12 +19,15 @@ fn init_world() -> World {
             vel: (10, 0),
             angle: 0,
             fire_dt: 0,
+            roll: 0, // The roll angle of spaceship.
+            roll_change: 20, // How fast to change roll angle.
+            roll_max: 1.0,
         },
         free_bullet_slot: 0,
         free_comet_slot: 0,
         free_explosion_slot: 0,
         bullet_settings: {
-            speed: 200,
+            speed: 1000,
             interval: 0.25,
         },
         comet_settings: {
@@ -65,12 +68,13 @@ fn render_world()
     draw(explosions: explosions, active: world.free_explosion_slot)
     draw(bullets: bullets, active: world.free_bullet_slot)
     draw(comets: comets, active: world.free_comet_slot)
-    draw(spaceship: world.spaceship)
+    // draw(spaceship: world.spaceship)
     draw(draw_list)
     clear(mut draw_list)
 
     // TEST
-    // draw_spaceship_3d(world.spaceship)
+    clear_depth()
+    draw_spaceship_3d(world.spaceship)
 }
 
 fn update_world()

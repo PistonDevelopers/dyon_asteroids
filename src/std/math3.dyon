@@ -1,7 +1,7 @@
 pi() = 3.141592653589793
 tau() = 2 * pi()
 
-fn clamp_pos_aa_bb(pos: vec4, aa: vec4, bb: vec4) -> {
+fn clamp__pos_aa_bb(pos: vec4, aa: vec4, bb: vec4) -> {
     return vec4 i {
         s := s(pos, i)
         if s < s(aa, i) { s = s(aa, i) }
@@ -14,7 +14,7 @@ identity() = [
     (1, 0, 0),
     (0, 1, 0)
 ]
-multiply_mat_mat(a: [vec4], b: [vec4]) = [
+multiply__mat_mat(a: [vec4], b: [vec4]) = [
     (
         x(a[0]) * s(b[0], 0) + y(a[0]) * s(b[1], 0),
         x(a[0]) * s(b[0], 1) + y(a[0]) * s(b[1], 1),
@@ -36,7 +36,7 @@ rotate(angle: f64) =
         (cos(angle), -sin(angle), 0),
         (sin(angle), cos(angle), 0)
     ]
-rotate_x_y_angle(x: f64, y: f64, angle: f64) =
+rotate__x_y_angle(x: f64, y: f64, angle: f64) =
     multiply(mat: multiply(mat: translate(x, y), mat: rotate(angle)),
              mat: translate(-x, -y))
 /*

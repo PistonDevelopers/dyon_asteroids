@@ -18,7 +18,7 @@ fn event() {
     handle(key: release_keyboard_key(), value: 0)
 }
 
-fn handle_key_value(key: opt[f64], val: f64) ~ mut world: World {
+fn handle__key_value(key: opt[f64], val: f64) ~ mut world: World {
     if key == none() { return }
     key := unwrap(key)
     if turn_left(key) {

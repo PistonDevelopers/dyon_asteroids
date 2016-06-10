@@ -9,8 +9,8 @@ pub type Materials = Vec<(Arc<String>, MtlSet)>;
 pub type ObjSets = Vec<(Arc<String>, ObjSet)>;
 
 pub fn register_obj(module: &mut Module) {
-    module.add(Arc::new("load_material".into()),
-        load_material, PreludeFunction {
+    module.add(Arc::new("load__material".into()),
+        load__material, PreludeFunction {
             lts: vec![Lt::Default],
             tys: vec![Type::Text],
             ret: Type::Result(Box::new(Type::Text))
@@ -27,8 +27,8 @@ pub fn register_obj(module: &mut Module) {
             tys: vec![],
             ret: Type::Array(Box::new(Type::Text))
         });
-    module.add(Arc::new("load_obj".into()),
-        load_obj, PreludeFunction {
+    module.add(Arc::new("load__obj".into()),
+        load__obj, PreludeFunction {
             lts: vec![Lt::Default],
             tys: vec![Type::Text],
             ret: Type::Result(Box::new(Type::Text))
@@ -45,93 +45,93 @@ pub fn register_obj(module: &mut Module) {
             tys: vec![],
             ret: Type::Array(Box::new(Type::Text))
         });
-    module.add(Arc::new("material_library_obj".into()),
-        material_library_obj, PreludeFunction {
+    module.add(Arc::new("material_library__obj".into()),
+        material_library__obj, PreludeFunction {
             lts: vec![Lt::Default],
             tys: vec![Type::F64],
             ret: Type::Option(Box::new(Type::Text))
         });
-    module.add(Arc::new("object_count_obj".into()),
-        object_count_obj, PreludeFunction {
+    module.add(Arc::new("object_count__obj".into()),
+        object_count__obj, PreludeFunction {
             lts: vec![Lt::Default],
             tys: vec![Type::F64],
             ret: Type::F64
         });
-    module.add(Arc::new("objects_obj".into()),
-        objects_obj, PreludeFunction {
+    module.add(Arc::new("objects__obj".into()),
+        objects__obj, PreludeFunction {
             lts: vec![Lt::Default],
             tys: vec![Type::F64],
             ret: Type::Array(Box::new(Type::Text))
         });
-    module.add(Arc::new("vertex_count_obj_object".into()),
-        vertex_count_obj_object, PreludeFunction {
+    module.add(Arc::new("vertex_count__obj_object".into()),
+        vertex_count__obj_object, PreludeFunction {
             lts: vec![Lt::Default; 2],
             tys: vec![Type::F64; 2],
             ret: Type::F64
         });
-    module.add(Arc::new("tex_vertex_count_obj_object".into()),
-        tex_vertex_count_obj_object, PreludeFunction {
+    module.add(Arc::new("tex_vertex_count__obj_object".into()),
+        tex_vertex_count__obj_object, PreludeFunction {
             lts: vec![Lt::Default; 2],
             tys: vec![Type::F64; 2],
             ret: Type::F64
         });
-    module.add(Arc::new("normal_count_obj_object".into()),
-        normal_count_obj_object, PreludeFunction {
+    module.add(Arc::new("normal_count__obj_object".into()),
+        normal_count__obj_object, PreludeFunction {
             lts: vec![Lt::Default; 2],
             tys: vec![Type::F64; 2],
             ret: Type::F64
         });
-    module.add(Arc::new("geometry_count_obj_object".into()),
-        geometry_count_obj_object, PreludeFunction {
+    module.add(Arc::new("geometry_count__obj_object".into()),
+        geometry_count__obj_object, PreludeFunction {
             lts: vec![Lt::Default; 2],
             tys: vec![Type::F64; 2],
             ret: Type::F64
         });
-    module.add(Arc::new("vertex_obj_object_vertex".into()),
-        vertex_obj_object_vertex, PreludeFunction {
+    module.add(Arc::new("vertex__obj_object_vertex".into()),
+        vertex__obj_object_vertex, PreludeFunction {
             lts: vec![Lt::Default; 3],
             tys: vec![Type::F64; 3],
             ret: Type::Vec4
         });
-    module.add(Arc::new("tex_vertex_obj_object_tex_vertex".into()),
-        tex_vertex_obj_object_tex_vertex, PreludeFunction {
+    module.add(Arc::new("tex_vertex__obj_object_tex_vertex".into()),
+        tex_vertex__obj_object_tex_vertex, PreludeFunction {
             lts: vec![Lt::Default; 3],
             tys: vec![Type::F64; 3],
             ret: Type::Vec4
         });
-    module.add(Arc::new("normal_obj_object_normal".into()),
-        normal_obj_object_normal, PreludeFunction {
+    module.add(Arc::new("normal__obj_object_normal".into()),
+        normal__obj_object_normal, PreludeFunction {
             lts: vec![Lt::Default; 3],
             tys: vec![Type::F64; 3],
             ret: Type::Vec4
         });
-    module.add(Arc::new("vertices_obj_object".into()),
-        vertices_obj_object, PreludeFunction {
+    module.add(Arc::new("vertices__obj_object".into()),
+        vertices__obj_object, PreludeFunction {
             lts: vec![Lt::Default; 2],
             tys: vec![Type::F64; 2],
             ret: Type::Array(Box::new(Type::Vec4))
         });
-    module.add(Arc::new("tex_vertices_obj_object".into()),
-        tex_vertices_obj_object, PreludeFunction {
+    module.add(Arc::new("tex_vertices__obj_object".into()),
+        tex_vertices__obj_object, PreludeFunction {
             lts: vec![Lt::Default; 2],
             tys: vec![Type::F64; 2],
             ret: Type::Array(Box::new(Type::Vec4))
         });
-    module.add(Arc::new("normals_obj_object".into()),
-        normals_obj_object, PreludeFunction {
+    module.add(Arc::new("normals__obj_object".into()),
+        normals__obj_object, PreludeFunction {
             lts: vec![Lt::Default; 2],
             tys: vec![Type::F64; 2],
             ret: Type::Array(Box::new(Type::Vec4))
         });
-    module.add(Arc::new("geometry_obj_object".into()),
-        geometry_obj_object, PreludeFunction {
+    module.add(Arc::new("geometry__obj_object".into()),
+        geometry__obj_object, PreludeFunction {
             lts: vec![Lt::Default; 2],
             tys: vec![Type::F64; 2],
             ret: Type::Array(Box::new(Type::object()))
         });
 }
 
-dyon_fn!{fn load_material(file: Arc<String>) -> Result<Arc<String>, String> {
+dyon_fn!{fn load__material(file: Arc<String>) -> Result<Arc<String>, String> {
     use wavefront_obj::mtl::parse;
     use std::fs::File;
     use std::io::Read;
@@ -149,7 +149,7 @@ dyon_fn!{fn load_material(file: Arc<String>) -> Result<Arc<String>, String> {
     Ok(file)
 }}
 
-dyon_fn!{fn load_obj(file: Arc<String>) -> Result<Arc<String>, String> {
+dyon_fn!{fn load__obj(file: Arc<String>) -> Result<Arc<String>, String> {
     use wavefront_obj::obj::parse;
     use std::fs::File;
     use std::io::Read;
@@ -193,75 +193,75 @@ dyon_fn!{fn objs() -> Vec<Arc<String>> {
     obj_sets.iter().map(|n| n.0.clone()).collect()
 }}
 
-dyon_fn!{fn material_library_obj(ind: usize) -> Option<Arc<String>> {
+dyon_fn!{fn material_library__obj(ind: usize) -> Option<Arc<String>> {
     let obj_sets = unsafe { &*Current::<ObjSets>::new() };
     obj_sets[ind].1.material_library.as_ref().map(|n| Arc::new(n.clone()))
 }}
 
-dyon_fn!{fn object_count_obj(ind: usize) -> usize {
+dyon_fn!{fn object_count__obj(ind: usize) -> usize {
     let obj_sets = unsafe { &*Current::<ObjSets>::new() };
     obj_sets[ind].1.objects.len()
 }}
 
-dyon_fn!{fn objects_obj(ind: usize) -> Vec<Arc<String>> {
+dyon_fn!{fn objects__obj(ind: usize) -> Vec<Arc<String>> {
     let obj_sets = unsafe { &*Current::<ObjSets>::new() };
     obj_sets[ind].1.objects.iter().map(|n| Arc::new(n.name.clone())).collect()
 }}
 
-dyon_fn!{fn vertex_count_obj_object(obj: usize, object: usize) -> usize {
+dyon_fn!{fn vertex_count__obj_object(obj: usize, object: usize) -> usize {
     let obj_sets = unsafe { &*Current::<ObjSets>::new() };
     obj_sets[obj].1.objects[object].vertices.len()
 }}
 
-dyon_fn!{fn tex_vertex_count_obj_object(obj: usize, object: usize) -> usize {
+dyon_fn!{fn tex_vertex_count__obj_object(obj: usize, object: usize) -> usize {
     let obj_sets = unsafe { &*Current::<ObjSets>::new() };
     obj_sets[obj].1.objects[object].tex_vertices.len()
 }}
 
-dyon_fn!{fn normal_count_obj_object(obj: usize, object: usize) -> usize {
+dyon_fn!{fn normal_count__obj_object(obj: usize, object: usize) -> usize {
     let obj_sets = unsafe { &*Current::<ObjSets>::new() };
     obj_sets[obj].1.objects[object].normals.len()
 }}
 
-dyon_fn!{fn geometry_count_obj_object(obj: usize, object: usize) -> usize {
+dyon_fn!{fn geometry_count__obj_object(obj: usize, object: usize) -> usize {
     let obj_sets = unsafe { &*Current::<ObjSets>::new() };
     obj_sets[obj].1.objects[object].geometry.len()
 }}
 
-dyon_fn!{fn vertex_obj_object_vertex
+dyon_fn!{fn vertex__obj_object_vertex
     (obj: usize, object: usize, vertex: usize) -> Vec4 {
     let obj_sets = unsafe { &*Current::<ObjSets>::new() };
     let vertex = obj_sets[obj].1.objects[object].vertices[vertex];
     [vertex.x, vertex.y, vertex.z].into()
 }}
 
-dyon_fn!{fn tex_vertex_obj_object_tex_vertex
+dyon_fn!{fn tex_vertex__obj_object_tex_vertex
     (obj: usize, object: usize, tex_vertex: usize) -> Vec4 {
     let obj_sets = unsafe { &*Current::<ObjSets>::new() };
     let tex_vertex = obj_sets[obj].1.objects[object].tex_vertices[tex_vertex];
     [tex_vertex.x, tex_vertex.y].into()
 }}
 
-dyon_fn!{fn normal_obj_object_normal
+dyon_fn!{fn normal__obj_object_normal
     (obj: usize, object: usize, normal: usize) -> Vec4 {
     let obj_sets = unsafe { &*Current::<ObjSets>::new() };
     let normal = obj_sets[obj].1.objects[object].normals[normal];
     [normal.x, normal.y, normal.z].into()
 }}
 
-dyon_fn!{fn vertices_obj_object(obj: usize, object: usize) -> Vec<Vec4> {
+dyon_fn!{fn vertices__obj_object(obj: usize, object: usize) -> Vec<Vec4> {
     let obj_sets = unsafe { &*Current::<ObjSets>::new() };
     obj_sets[obj].1.objects[object].vertices.iter()
         .map(|vertex| [vertex.x, vertex.y, vertex.z].into()).collect()
 }}
 
-dyon_fn!{fn tex_vertices_obj_object(obj: usize, object: usize) -> Vec<Vec4> {
+dyon_fn!{fn tex_vertices__obj_object(obj: usize, object: usize) -> Vec<Vec4> {
     let obj_sets = unsafe { &*Current::<ObjSets>::new() };
     obj_sets[obj].1.objects[object].tex_vertices.iter()
         .map(|tex_vertex| [tex_vertex.x, tex_vertex.y].into()).collect()
 }}
 
-dyon_fn!{fn normals_obj_object(obj: usize, object: usize) -> Vec<Vec4> {
+dyon_fn!{fn normals__obj_object(obj: usize, object: usize) -> Vec<Vec4> {
     let obj_sets = unsafe { &*Current::<ObjSets>::new() };
     obj_sets[obj].1.objects[object].normals.iter()
         .map(|normal| [normal.x, normal.y, normal.z].into()).collect()
@@ -285,7 +285,7 @@ impl<'a> From<&'a obj::Geometry> for Geometry {
 
 dyon_obj!{Geometry { material_name, smooth_shading_group, shapes }}
 
-dyon_fn!{fn geometry_obj_object(obj: usize, object: usize) -> Vec<Geometry> {
+dyon_fn!{fn geometry__obj_object(obj: usize, object: usize) -> Vec<Geometry> {
     let obj_sets = unsafe { &*Current::<ObjSets>::new() };
     obj_sets[obj].1.objects[object].geometry.iter()
         .map(|geometry| geometry.into()).collect()

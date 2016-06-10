@@ -6,11 +6,11 @@ extern crate piston;
 extern crate dyon;
 extern crate current;
 extern crate dyon_interactive;
-extern crate glfw_window;
+extern crate sdl2_window;
 extern crate wavefront_obj;
 extern crate vecmath;
 
-use glfw_window::GlfwWindow;
+use sdl2_window::Sdl2Window;
 use glium_graphics::{Glium2d, GliumWindow, OpenGL};
 use piston::window::WindowSettings;
 use piston::input::Event;
@@ -21,7 +21,7 @@ use engine::{IndexBuffers, Materials, ObjSets, Programs, VertexBuffers};
 
 mod engine;
 
-type Window = GliumWindow<GlfwWindow>;
+type Window = GliumWindow<Sdl2Window>;
 
 fn main() {
     let opengl = OpenGL::V3_2;

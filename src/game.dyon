@@ -28,7 +28,8 @@ fn init_world() -> World {
         free_explosion_slot: 0,
         bullet_settings: {
             speed: 1000,
-            interval: 0.25,
+            interval: 0.285,
+            sound: 0,
         },
         comet_settings: {
             radius: 30,
@@ -39,7 +40,8 @@ fn init_world() -> World {
         },
         explosion_settings: {
             max_time: 2,
-            expand_speed: 20
+            expand_speed: 20,
+            sound: 0,
         },
         space_settings: {
             offset: 30,

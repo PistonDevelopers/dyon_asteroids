@@ -53,7 +53,8 @@ fn fire__world_dt(mut world, dt) ~ mut bullets: [Bullet []] {
 
         SOUND := sound_laser_offset()
         COUNT := sound_laser_count()
-        play_once(sound: random() * COUNT + SOUND)
+        play_once(sound: world.bullet_settings.sound % COUNT + SOUND)
+        world.bullet_settings.sound += 1
     }
 }
 

@@ -1,7 +1,7 @@
 sound_laser_offset() = 0
 sound_laser_count() = 3
 sound_explosion_offset() = sound_laser_offset() + sound_laser_count()
-sound_explosion_count() = 3
+sound_explosion_count() = 4
 
 fn load_assets() -> res {
 
@@ -61,19 +61,28 @@ fn load_assets() -> res {
     println(default_index)
 
     println("\nMUSIC")
-    music := load(music: "assets/music/space-of-silence.wav")?
+    music := load(music: "assets/music/space-of-atmos.wav")?
     println(music)
+
     music_index := music(music)?
     play_forever(music: music_index)
 
     println("|- LASER")
-    _ := prepare(sound: "assets/sounds/laser.wav")?
-    _ := prepare(sound: "assets/sounds/laser2.wav")?
-    _ := prepare(sound: "assets/sounds/laser3.wav")?
+    _ := prepare(sound: "assets/sounds/laser-pulse.wav")?
+    _ := prepare(sound: "assets/sounds/laser-pulse-2.wav")?
+    _ := prepare(sound: "assets/sounds/laser-pulse-3.wav")?
+    // _ := prepare(sound: "assets/sounds/laser.wav")?
+    // _ := prepare(sound: "assets/sounds/laser2.wav")?
+    // _ := prepare(sound: "assets/sounds/laser3.wav")?
     println("|- EXPLOSION")
-    _ := prepare(sound: "assets/sounds/explosion.wav")?
-    _ := prepare(sound: "assets/sounds/explosion2.wav")?
-    _ := prepare(sound: "assets/sounds/explosion3.wav")?
+    _ := prepare(sound: "assets/sounds/laser-pulse-4.wav")?
+    _ := prepare(sound: "assets/sounds/laser-pulse-5.wav")?
+    _ := prepare(sound: "assets/sounds/laser-pulse-6.wav")?
+    _ := prepare(sound: "assets/sounds/laser-pulse-7.wav")?
+    // _ := prepare(sound: "assets/sounds/explosion-guitar.wav")?
+    // _ := prepare(sound: "assets/sounds/explosion.wav")?
+    // _ := prepare(sound: "assets/sounds/explosion2.wav")?
+    // _ := prepare(sound: "assets/sounds/explosion3.wav")?
 
     return ok("Assets loaded")
 }

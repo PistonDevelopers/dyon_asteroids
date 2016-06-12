@@ -109,8 +109,8 @@ fn init_audio() {
         mix::DEFAULT_CHANNELS,
         1024
     ).unwrap();
-    // Allow up to 3 sounds playing at the same time.
-    mix::allocate_channels(mix::DEFAULT_CHANNELS * 3);
+    // Allow up to 8 sounds playing at the same time.
+    mix::allocate_channels(8);
 }
 
 fn load_module() -> Option<Module> {

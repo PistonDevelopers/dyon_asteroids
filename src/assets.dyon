@@ -1,6 +1,6 @@
 sound_laser_offset() = 0
 sound_laser_count() = 3
-sound_explosion_offset() = 2
+sound_explosion_offset() = sound_laser_offset() + sound_laser_count()
 sound_explosion_count() = 3
 
 fn load_assets() -> res {

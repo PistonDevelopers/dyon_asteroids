@@ -103,12 +103,14 @@ fn init_audio() {
         | mix::INIT_OGG
     );
     mix::open_audio(
-        mix::DEFAULT_FREQUENCY,
+        // Use cd quality to avoid noise artifacts.
+        mix::DEFAULT_FREQUENCY * 2,
         mix::DEFAULT_FORMAT,
         mix::DEFAULT_CHANNELS,
         1024
     ).unwrap();
-    mix::allocate_channels(mix::DEFAULT_CHANNELS);
+    // Allow up to 3 sounds playing at the same time.
+    mix::allocate_channels(mix::DEFAULT_CHANNELS * 3);
 }
 
 fn load_module() -> Option<Module> {

@@ -1,3 +1,8 @@
+sound_laser_offset() = 0
+sound_laser_count() = 3
+sound_explosion_offset() = 2
+sound_explosion_count() = 3
+
 fn load_assets() -> res {
 
     spaceship_material := load(material: "assets/spaceship.mtl")?
@@ -61,19 +66,24 @@ fn load_assets() -> res {
     music_index := music(music)?
     play_forever(music: music_index)
 
-    laser := load(sound: "assets/sounds/laser.wav")?
-    println(laser)
-    laser_index := sound(laser)?
-    set(sound: laser_index, volume: 10)
-    // play_once(sound: laser_index)
-    println(laser_index)
-
-    explosion := load(sound: "assets/sounds/explosion.wav")?
-    println(explosion)
-    explosion_index := sound(explosion)?
-    println(explosion_index)
+    println("|- LASER")
+    _ := prepare(sound: "assets/sounds/laser.wav")?
+    _ := prepare(sound: "assets/sounds/laser2.wav")?
+    _ := prepare(sound: "assets/sounds/laser3.wav")?
+    println("|- EXPLOSION")
+    _ := prepare(sound: "assets/sounds/explosion.wav")?
+    _ := prepare(sound: "assets/sounds/explosion2.wav")?
+    _ := prepare(sound: "assets/sounds/explosion3.wav")?
 
     return ok("Assets loaded")
+}
+
+fn prepare__sound(file: str) -> res {
+    file := load(sound: file)?
+    println(file)
+    index := sound(file)?
+    println(index)
+    ok(index)
 }
 
 fn prepare__obj_material(obj: f64, material: str) -> Indices {} {

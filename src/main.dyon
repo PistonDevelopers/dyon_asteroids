@@ -27,9 +27,9 @@ fn main() {
     input := unwrap(load("src/input.dyon"))
     render := unwrap(load(source: "src/std/render.dyon", imports: [math]))
     space := unwrap(load(source: "src/space.dyon", imports: [utils]))
-    bullets := unwrap(load(source: "src/bullets.dyon", imports: [space, render]))
+    bullets := unwrap(load(source: "src/bullets.dyon", imports: [space, render, assets]))
     spaceship := unwrap(load(source: "src/spaceship.dyon", imports: [bullets]))
-    explosions := unwrap(load(source: "src/explosions.dyon", imports: [utils, render]))
+    explosions := unwrap(load(source: "src/explosions.dyon", imports: [utils, render, assets]))
     comets := unwrap(load(source: "src/comets.dyon", imports: [bullets, explosions]))
     game := unwrap(load(source: "src/game.dyon",
                         imports: [input, spaceship, bullets, comets, explosions]))

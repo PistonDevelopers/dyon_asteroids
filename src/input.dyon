@@ -7,11 +7,13 @@ key_up() = 1073741906
 key_left() = 1073741904
 key_right() = 1073741903
 key_down() = 1073741905
+key_p() = 112
 
 forward(key: f64) = (key == key_w()) || (key == key_up())
 turn_left(key: f64) = (key == key_a()) || (key == key_left())
 turn_right(key: f64) = (key == key_d()) || (key == key_right())
 backward(key: f64) = (key == key_s()) || (key == key_down())
+pause(key: f64) = key == key_p()
 
 fn event() {
     handle(key: press_keyboard_key(), value: 1)
@@ -21,7 +23,9 @@ fn event() {
 fn handle__key_value(key: opt[f64], val: f64) ~ mut world: World {
     if key == none() { return }
     key := unwrap(key)
-    if turn_left(key) {
+    if pause(key) && (val == 1) {
+        world.paused = !world.paused
+    } else if turn_left(key) {
         world.input_state.left = clone(val)
     } else if turn_right(key) {
         world.input_state.right = clone(val)

@@ -32,7 +32,8 @@ fn create_explosion__pos_vel_radius(pos: vec4, vel: vec4, radius: f64)
 
     SOUND := sound_explosion_offset()
     COUNT := sound_explosion_count()
-    play_once(sound: random() * COUNT + SOUND)
+    play_once(sound: (world.explosion_settings.sound % COUNT) + SOUND)
+    world.explosion_settings.sound += 1
 }
 
 fn move_explosions()

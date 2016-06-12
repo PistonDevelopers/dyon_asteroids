@@ -1,7 +1,7 @@
 # dyon_asteroids
 A demo game project for Dyon/Piston/Glium to test Dyon and research design for dyon_interactive
 
-Current screenshot (final version will look better):
+Current screenshot (work in progress):
 
 ![screenshot](./images/screenshot.png)
 

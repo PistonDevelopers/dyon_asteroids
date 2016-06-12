@@ -2,6 +2,7 @@
 fn init_world() -> World {
     comet_hit_radius := 10
     return {
+        paused: false,
         input_state: {
             left: 0,
             right: 0,
@@ -86,6 +87,8 @@ fn update_world()
   mut comets: [Comet []],
   mut collision_grid: CollisionGrid [[f64]]
 {
+    if world.paused { return }
+    
     ~ space := window_size()
 
     spawn_comets()
